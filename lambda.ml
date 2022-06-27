@@ -19,20 +19,18 @@ let rec interpreter context expression =
       | Closure {context; parameter; body} ->
           interpreter (Context.add parameter argument context) body
       | Native f -> f argument
+      
 
-(* ((λf.(f (print_hello_world f))) (λf.(f (print_hello_world f)))) *)
+(* λf. (print_hello_world "f") *)
 let lambda_abstraction = Abstraction {
-  parameter = "f"; 
+  parameter = "f";
   body = Application {
-    fn = Variable "f"; 
-    argument = Application {
-      fn = Variable "print_hello_world"; 
-      argument = Variable "f"
-    }
+    fn = Variable "print_hello_world";
+    argument = Variable "f"
   }
 }
 
-let code = Application {fn = lambda_abstraction; argument = lambda_abstraction}
+let code = Application {fn = lambda_abstraction; argument = Variable "print_hello_world"}
 
 let initial_context = 
   Context.empty 
